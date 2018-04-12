@@ -112,7 +112,7 @@ class DropboxStorage(Storage):
         # Note to the unwary, this is actually an mtime
         return self.client.files_get_metadata(name).client_modified
 
-    def get_available_name(self, name, max_length):
+    def get_available_name(self, name, max_length=None):
         """
         Returns a filename that's free on the target storage system, and
         available for new content to be written to.
@@ -126,7 +126,8 @@ class DropboxStorage(Storage):
         count = itertools.count(1)
         while self.exists(name):
             # file_ext includes the dot.
-            name = os.path.join(dir_name, "%s_%s%s" % (file_root, count.next(), file_ext))
+            _fn = "%s_%s%s" % (file_root, count.next(), file_ext)
+            name = os.path.join(dir_name, _fn)
 
         return name
 
