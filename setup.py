@@ -31,4 +31,5 @@ setup(
     packages=get_packages(),
     install_requires=requires,
     keywords = ['django', 'storage', 'dropbox'],
+    license='MIT',
 )
