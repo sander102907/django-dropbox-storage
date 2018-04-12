@@ -106,6 +106,37 @@ class DropboxStorageTest(TestCase):
 
         self.assertFalse(self.storage.exists('django_storage_test_delete'))
 
+    def test_write_readonly_file(self):
+        """
+        Storage raises an error when trying to write on a read-only file.
+        """
+        f = self.storage.open('django_storage_test_write_on_readonly', 'r')
+
+        with self.assertRaises(AttributeError):
+            f.write('read-only file')
+
+        f.close()
+
+    def test_get_available_name(self):
+        """
+        Storage auto adds a suffix to given name if the filename already exist.
+        """
+        query = 'django_storage_my_file'
+        ext = '.txt'
+        fn = query + ext
+
+        self.assertFalse(self.storage.exists(fn))
+        name = self.storage.get_available_name(fn)
+        self.assertEqual(name, self.location + '/' + fn)
+
+        f = self.storage.open(fn, 'w')
+        f.write(query)
+        f.close()
+
+        self.assertTrue(self.storage.exists(fn))
+        name = self.storage.get_available_name(fn)
+        self.assertEqual(name, self.location + '/' + query + '_1' + ext)
+
     def test_file_size(self):
         """
         Storage returns a url to access a given file from the Web.
