@@ -90,16 +90,16 @@ When contributing, please follow these steps:
 
 ## Authors
 
-* Emanuele Bertoldi
+* **Emanuele Bertoldi**
 
 This project is based on previous work by:
 
-* Andres Torres [django-dropbox]
-* Maximiliano Cecilia [django-dropbox]
-* Josh Schneier [django-storages]
-* Danielle Madeley [django-storages]
+* **Andres Torres** [django-dropbox]
+* **Maximiliano Cecilia** [django-dropbox]
+* **Josh Schneier** [django-storages]
+* **Danielle Madeley** [django-storages]
 
-**Thanks to all of you!**
+Kudos and many thanks to all of them!
 
 ## License
 
