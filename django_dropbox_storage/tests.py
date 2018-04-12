@@ -58,8 +58,8 @@ class DropboxStorageTest(TestCase):
         self.assertFalse(self.storage.exists('django_storage_test_2'))
         self.assertFalse(self.storage.exists('django_storage_dir_1'))
 
-        f = self.storage.save('django_storage_test_1', ContentFile('custom content'))
-        f = self.storage.save('django_storage_test_2', ContentFile('custom content'))
+        self.storage.save('django_storage_test_1', ContentFile('custom content'))
+        self.storage.save('django_storage_test_2', ContentFile('custom content'))
         self.storage.client.files_create_folder(self.location + '/django_storage_dir_1')
 
         dirs, files = self.storage.listdir(self.location)

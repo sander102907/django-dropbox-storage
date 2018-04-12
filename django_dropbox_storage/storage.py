@@ -1,7 +1,6 @@
 # Original authors: Andres Torres and Maximiliano Cecilia
 
 import os.path
-import re
 import itertools
 try:
     from cStringIO import StringIO
@@ -11,13 +10,11 @@ from dropbox import Dropbox
 from dropbox.exceptions import ApiError
 from dropbox.files import FolderMetadata, FileMetadata, DeleteError
 from django.core.exceptions import ImproperlyConfigured
-from django.core.cache import cache
 from django.core.files import File
 from django.core.files.storage import Storage
 from django.utils.deconstruct import deconstructible
-from django.utils.encoding import filepath_to_uri
 
-from .settings import ACCESS_TOKEN, CACHE_TIMEOUT, SHARE_LINK_CACHE_TIMEOUT
+from .settings import ACCESS_TOKEN
 
 
 @deconstructible
@@ -53,7 +50,7 @@ class DropboxStorage(Storage):
         # if not response['is_dir']:
         #     raise IOError("%s exists and is not a directory." % directory)
         abs_name = os.path.realpath(os.path.join(self.location, name))
-        foo = self.client.files_upload(content.read(), abs_name)
+        self.client.files_upload(content.read(), abs_name)
         return name
 
     def delete(self, name):

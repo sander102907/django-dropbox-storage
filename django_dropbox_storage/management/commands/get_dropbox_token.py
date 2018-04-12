@@ -19,6 +19,7 @@ class Command(NoArgsCommand):
 
         try:
             oauth_result = auth_flow.finish(auth_code)
-            self.stdout.write("DROPBOX_ACCESS_TOKEN = '{}'".format(oauth_result.access_token))
+            token = oauth_result.access_token
+            self.stdout.write("DROPBOX_ACCESS_TOKEN = '{}'".format(token))
         except Exception as e:
             raise CommandError('Error: {}'.format(e))
