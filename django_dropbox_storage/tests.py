@@ -1,3 +1,4 @@
+import datetime
 from django.core.exceptions import ImproperlyConfigured
 from django.core.files.base import ContentFile
 from django.test import TestCase
@@ -5,9 +6,8 @@ from django_dropbox_storage.storage import DropboxStorage
 
 
 class DropboxStorageTest(TestCase):
-
     def setUp(self):
-        self.location = '/django_storage_testing'
+        self.location = '/django_dropbox_storage_testing'
         self.storage = DropboxStorage(location=self.location)
         self.storage.base_url = '/test_media_url/'
 
@@ -20,6 +20,7 @@ class DropboxStorageTest(TestCase):
         """
         with self.assertRaises(ImproperlyConfigured):
             DropboxStorage(token=None)
+
         with self.assertRaises(ImproperlyConfigured):
             DropboxStorage(token='')
 
@@ -38,7 +39,6 @@ class DropboxStorageTest(TestCase):
         f.close()
 
         self.storage.delete('django_storage_test')
-        self.assertFalse(self.storage.exists('django_storage_test'))
 
     def test_exists_folder(self):
         """
@@ -71,23 +71,6 @@ class DropboxStorageTest(TestCase):
         self.storage.delete('django_storage_test_2')
         self.storage.delete('django_storage_dir_1')
 
-    def test_file_size(self):
-        """
-        Storage returns a url to access a given file from the Web.
-        """
-        self.assertFalse(self.storage.exists('django_storage_test_size'))
-        f = self.storage.open('django_storage_test_size', 'w')
-        f.write('these are 18 bytes')
-        f.close()
-        self.assertTrue(self.storage.exists('django_storage_test_size'))
-
-        f = self.storage.open('django_storage_test_size', 'r')
-        self.assertEqual(f.size, 18)
-        f.close()
-
-        self.storage.delete('django_storage_test_size')
-        self.assertFalse(self.storage.exists('django_storage_test_size'))
-
     def test_file_delete(self):
         """
         Storage returns true if deletion was performed, false otherwise.
@@ -105,3 +88,63 @@ class DropboxStorageTest(TestCase):
 
         deleted = self.storage.delete('django_storage_test_delete')
         self.assertEqual(deleted, False)
+
+        self.assertFalse(self.storage.exists('django_storage_test_delete'))
+
+    def test_file_size(self):
+        """
+        Storage returns a url to access a given file from the Web.
+        """
+        self.assertFalse(self.storage.exists('django_storage_test_size'))
+        f = self.storage.open('django_storage_test_size', 'w')
+        f.write('these are 18 bytes')
+        f.close()
+        self.assertTrue(self.storage.exists('django_storage_test_size'))
+
+        f = self.storage.open('django_storage_test_size', 'r')
+        self.assertEqual(f.size, 18)
+        f.close()
+
+        self.assertEqual(self.storage.size('django_storage_test_size'), 18)
+
+        self.storage.delete('django_storage_test_size')
+
+    def test_file_url(self):
+        """
+        Storage returns a url to access a given file from the Web.
+        """
+        self.assertFalse(self.storage.exists('django_storage_test_url'))
+        f = self.storage.open('django_storage_test_url', 'w')
+        f.write('storage url')
+        f.close()
+        self.assertTrue(self.storage.exists('django_storage_test_url'))
+
+        self.assertTrue(self.storage.url('django_storage_test_url').startswith('https://dl.dropboxusercontent.com/apitl'))
+
+        self.storage.delete('django_storage_test_url')
+
+    def test_file_modified_time(self):
+        """
+        Storage returns the time of latest change of given file from the Web.
+        """
+        f = self.storage.open('django_storage_test_modified_time', 'w')
+        f.write('storage modified time')
+        f.close()
+
+        mt = self.storage.modified_time('django_storage_test_modified_time')
+        self.assertIsInstance(mt, datetime.datetime)
+
+        self.storage.delete('django_storage_test_modified_time')
+
+    def test_file_accessed_time(self):
+        """
+        Storage returns the time of latest access to given file from the Web.
+        """
+        f = self.storage.open('django_storage_test_accessed_time', 'w')
+        f.write('storage accessed time')
+        f.close()
+
+        at = self.storage.accessed_time('django_storage_test_accessed_time')
+        self.assertIsInstance(at, datetime.datetime)
+
+        self.storage.delete('django_storage_test_accessed_time')

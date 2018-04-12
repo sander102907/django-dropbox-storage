@@ -91,23 +91,21 @@ class DropboxStorage(Storage):
         return directories, files
 
     def size(self, name):
-        cache_key = 'django-dropbox-size:{}'.format(filepath_to_uri(name))
-        size = cache.get(cache_key)
-
-        if not size:
-            size = self.client.files_get_metadata(name).size
-            cache.set(cache_key, size, CACHE_TIMEOUT)
-        return size
+        name = self._get_abs_path(name)
+        return self.client.files_get_metadata(name).size
 
     def url(self, name):
-        cache_key = 'django-dropbox-size:{}'.format(filepath_to_uri(name))
-        url = cache.get(cache_key)
+        name = self._get_abs_path(name)
+        return self.client.files_get_temporary_link(name).link
 
-        if not url:
-            url = self.client.files_get_temporary_link(name).link
-            cache.set(cache_key, url, SHARE_LINK_CACHE_TIMEOUT)
+    def modified_time(self, name):
+        name = self._get_abs_path(name)
+        return self.client.files_get_metadata(name).server_modified
 
-        return url
+    def accessed_time(self, name):
+        name = self._get_abs_path(name)
+        # Note to the unwary, this is actually an mtime
+        return self.client.files_get_metadata(name).client_modified
 
     def get_available_name(self, name, max_length):
         """
