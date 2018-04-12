@@ -58,10 +58,14 @@ class DropboxStorage(Storage):
         try:
             self.client.files_delete(name)
         except ApiError as e:
-            # not found
-            if isinstance(e.error, DeleteError) and e.error.is_path_lookup() and e.error.get_path_lookup().is_not_found():
+            if isinstance(e.error, DeleteError)\
+                    and e.error.is_path_lookup()\
+                    and e.error.get_path_lookup().is_not_found():
+                # not found
                 return False
+            # error
             raise e
+        # deleted
         return True
 
     def exists(self, name):
@@ -69,10 +73,14 @@ class DropboxStorage(Storage):
         try:
             self.client.files_get_metadata(name)
         except ApiError as e:
-            # not found
-            if hasattr(e.error, 'is_path') and e.error.is_path() and e.error.get_path().is_not_found():
+            if hasattr(e.error, 'is_path')\
+                    and e.error.is_path()\
+                    and e.error.get_path().is_not_found():
+                # not found
                 return False
+            # error
             raise e
+        # found
         return True
 
     def listdir(self, path):
@@ -81,9 +89,9 @@ class DropboxStorage(Storage):
         directories = []
         files = []
         for entry in response.entries:
-            if type(entry) == FolderMetadata:
+            if isinstance(entry, FolderMetadata):
                 directories.append(os.path.basename(entry.path_display))
-            elif type(entry) == FileMetadata:
+            elif isinstance(entry, FileMetadata):
                 files.append(os.path.basename(entry.path_display))
         return directories, files
 
