@@ -13,7 +13,10 @@ def get_packages():
 
     return packages
 
-requires = ['dropbox>=8.0.0']
+requires = [
+    'django>=1.11',
+    'dropbox>=8.0.0',
+]
 
 setup(name='django-dropbox-storage',
       version=version,
@@ -22,4 +25,5 @@ setup(name='django-dropbox-storage',
       author_email='emanuele.bertoldi@gmail.com',
       url='https://github.com/zuck/django-dropbox-storage',
       packages=get_packages(),
-      install_requires=requires,)
+      install_requires=requires,
+)
