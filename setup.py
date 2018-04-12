@@ -18,13 +18,17 @@ requires = [
     'dropbox>=8.0.0',
 ]
 
-setup(name='django-dropbox-storage',
-      version=version,
-      description='A Dropbox Storage for your Django apps',
-      author=u'Emanuele Bertoldi',
-      author_email='emanuele.bertoldi@gmail.com',
-      url='https://github.com/zuck/django-dropbox-storage',
-      packages=get_packages(),
-      install_requires=requires,
-      keywords = ['django', 'storage', 'dropbox'],
+project_url = 'https://github.com/zuck/django-dropbox-storage'
+
+setup(
+    name='django-dropbox-storage',
+    version=version,
+    description='A Dropbox Storage for your Django apps',
+    author=u'Emanuele Bertoldi',
+    author_email='emanuele.bertoldi@gmail.com',
+    url=project_url,
+    download_url=project_url + '/archive/' + version + '.tar.gz',
+    packages=get_packages(),
+    install_requires=requires,
+    keywords = ['django', 'storage', 'dropbox'],
 )
