@@ -26,4 +26,5 @@ setup(name='django-dropbox-storage',
       url='https://github.com/zuck/django-dropbox-storage',
       packages=get_packages(),
       install_requires=requires,
+      keywords = ['django', 'storage', 'dropbox'],
 )
