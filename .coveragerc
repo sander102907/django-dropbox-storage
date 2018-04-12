@@ -2,9 +2,10 @@
 branch = True
 source = .
 omit =
+    */settings/*
     */migrations/*
     */tests/*
-    */settings/*
+    */tests.py
     */wsgi.py
     env/*
     venv/*
