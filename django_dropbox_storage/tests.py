@@ -2,6 +2,7 @@ import datetime
 from django.core.exceptions import ImproperlyConfigured
 from django.core.files.base import ContentFile
 from django.test import TestCase
+from django_dropbox_storage.settings import DEFAULT_ROOT_FOLDER
 from django_dropbox_storage.storage import DropboxStorage
 
 
@@ -23,6 +24,20 @@ class DropboxStorageTest(TestCase):
 
         with self.assertRaises(ImproperlyConfigured):
             DropboxStorage(token='')
+
+    def test_default_root_folder(self, *args):
+        """
+        Storage uses default root folder if not provided.
+        """
+        storage = DropboxStorage(location=None)
+        self.assertEqual(storage.location, DEFAULT_ROOT_FOLDER)
+
+    def test_passing_location(self, *args):
+        """
+        Storage uses given location as root folder.
+        """
+        storage = DropboxStorage(location='/custom/root/folder')
+        self.assertEqual(storage.location, '/custom/root/folder')
 
     def test_file_access_options(self):
         """
@@ -119,7 +134,8 @@ class DropboxStorageTest(TestCase):
         f.close()
         self.assertTrue(self.storage.exists('django_storage_test_url'))
 
-        self.assertTrue(self.storage.url('django_storage_test_url').startswith('https://dl.dropboxusercontent.com/apitl'))
+        self.assertTrue(self.storage.url('django_storage_test_url').startswith(
+            'https://dl.dropboxusercontent.com/apitl'))
 
         self.storage.delete('django_storage_test_url')
 

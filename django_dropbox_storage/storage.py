@@ -14,7 +14,7 @@ from django.core.files import File
 from django.core.files.storage import Storage
 from django.utils.deconstruct import deconstructible
 
-from .settings import ACCESS_TOKEN
+from .settings import ACCESS_TOKEN, ROOT_FOLDER, DEFAULT_ROOT_FOLDER
 
 
 @deconstructible
@@ -23,14 +23,14 @@ class DropboxStorage(Storage):
     A storage class providing access to resources in a Dropbox folder.
     """
 
-    def __init__(self, token=ACCESS_TOKEN, location='/Public'):
+    def __init__(self, token=ACCESS_TOKEN, location=ROOT_FOLDER):
         if not token:
             raise ImproperlyConfigured("You must configure an access token at "
                                        "'settings.DROPBOX_ACCESS_TOKEN'.")
 
         self.client = Dropbox(token)
         self.account_info = self.client.users_get_current_account()
-        self.location = location
+        self.location = location or DEFAULT_ROOT_FOLDER
         self.base_url = 'https://dl.dropboxusercontent.com/'
 
     def _get_abs_path(self, name):
