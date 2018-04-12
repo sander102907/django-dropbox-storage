@@ -1,7 +1,9 @@
+# Original authors: Andres Torres and Maximiliano Cecilia
+
 from django.core.management.base import NoArgsCommand, CommandError
 from dropbox import DropboxOAuth2FlowNoRedirect
 
-from django_dropbox.settings import CONSUMER_KEY, CONSUMER_SECRET
+from django_dropbox_storage.settings import CONSUMER_KEY, CONSUMER_SECRET
 
 
 class Command(NoArgsCommand):

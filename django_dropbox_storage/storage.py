@@ -17,10 +17,13 @@ from django.utils.encoding import filepath_to_uri
 from .settings import ACCESS_TOKEN, CACHE_TIMEOUT, SHARE_LINK_CACHE_TIMEOUT
 
 
+assert ACCESS_TOKEN, "DROPBOX_ACCESS_TOKEN is not set!"
+
+
 @deconstructible
 class DropboxStorage(Storage):
     """
-    A storage class providing access to resources in a Dropbox Public folder.
+    A storage class providing access to resources in a Dropbox folder.
     """
 
     def __init__(self, location='/Public'):
@@ -51,14 +54,22 @@ class DropboxStorage(Storage):
 
     def delete(self, name):
         name = self._get_abs_path(name)
-        self.client.files_delete(name)
+        try:
+            self.client.files_delete(name)
+        except ApiError as e:
+            # not found
+            if e.error.is_path() and e.error.get_path().is_not_found():
+                return False
+            raise e
+        return True
 
     def exists(self, name):
         name = self._get_abs_path(name)
         try:
             self.client.files_get_metadata(name)
         except ApiError as e:
-            if e.error.is_path() and e.error.get_path().is_not_found():  # not found
+            # not found
+            if e.error.is_path() and e.error.get_path().is_not_found():
                 return False
             raise e
         return True
@@ -94,7 +105,7 @@ class DropboxStorage(Storage):
 
         return url
 
-    def get_available_name(self, name):
+    def get_available_name(self, name, max_length):
         """
         Returns a filename that's free on the target storage system, and
         available for new content to be written to.

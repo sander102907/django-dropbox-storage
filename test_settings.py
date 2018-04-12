@@ -1,4 +1,4 @@
-# Django settings for django_dropbox_project project.
+# Django settings for testing of django_dropbox_storage project.
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -100,7 +100,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
 )
 
-ROOT_URLCONF = 'django_dropbox_project.urls'
+ROOT_URLCONF = 'test_urls'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
@@ -119,8 +119,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-    'django_dropbox',
-    'dropbox_testing',
+    'django_dropbox_storage',
 )
 
 # A sample logging configuration. The only tangible logging

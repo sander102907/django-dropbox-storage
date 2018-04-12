@@ -1,39 +1,84 @@
-# django-dropbox
-> Version 0.1.2
+# django-dropbox-storage
 
-# What
+> A Dropbox Storage for your Django apps
 
-django-dropbox is a Django App that contains a Django Storage which uses Dropbox.
+## What
 
-# Installing
+`django-dropbox-storage` allows Django apps to use Dropbox as a storage backend for file uploading.
 
-## First of all
+## Installing
 
-    pip install django-dropbox
+First things first:
 
-## Add it to your Django Project
+```
+$ pip install django-dropbox-storage
+```
 
-INSTALLED_APPS on settings.py
+Then open the `settings.py` of your project and iclude it to your `INSTALLED_APPS`:
 
-    INSTALLED_APPS = (
-        ...
-        'django_dropbox',
-        ...
-    )
+```
+INSTALLED_APPS = (
+    ...
+    'django_dropbox_storage',
+    ...
+)
+```
 
-additionally you must need to set the next settings:
+If you want to use `django_dropbox_storage` as default storage for all file uploads, you need to adjust `DEFAULT_FILE_STORAGE` too:
 
-    DROPBOX_ACCESS_TOKEN = 'xxx'
+```
+DEFAULT_FILE_STORAGE = 'django_dropbox_storage.storage.DropboxStorage'
+```
 
-if you don't have `DROPBOX_ACCESS_TOKEN` you can create one after creating a Dropbox app at [Dropbox for Developers](https://www.dropbox.com/developers).
+If you just want to use it on a single model field, you can simply import it:
+
+```
+from django_dropbox_storage.storage import DropboxStorage
+
+DROPBOX_STORAGE = DropboxStorage()
+
+photo = models.ImageField(upload_to='photos', storage=DROPBOX_STORAGE ...)
+```
+
+In order to let it work properly, you must set the next settings:
+
+```
+DROPBOX_ACCESS_TOKEN = 'xxx'
+```
+
+If you don't have `DROPBOX_ACCESS_TOKEN` you can create one after creating a Dropbox app at [Dropbox for Developers](https://www.dropbox.com/developers).
 If you have your Dropbox `App key` and `App secret`, you can set `DROPBOX_CONSUMER_KEY` and `DROPBOX_CONSUMER_SECRET` settings in `settings.py`, then run:
 
-    $ python manage.py get_dropbox_token
+```
+$ python manage.py get_dropbox_token
+```
 
-And follow up on screen instructions, finally set the  and `DROPBOX_ACCESS_TOKEN_SECRET` in `settings.py`
+And follow up on screen instructions, finally set the `DROPBOX_ACCESS_TOKEN_SECRET` in your `settings.py` module.
 
+## Tests
 
-# Contributing
+Tests are written following Django's best practices.
+
+In order to run them, you need to set `DROPBOX_ACCESS_TOKEN` properly.
+
+**NOTE:** if you're testing this package as _stand-alone_, you can set the access token in a `local_settings.py` module put in the root folder.
+
+To launch the test suite:
+
+```
+$ python manage.py test --settings=test_settings
+```
+
+To check the unit tests coverage you can:
+
+```
+$ pip install coverage
+$ coverage run manage.py test --settings=test_settings
+$ coverage report -m
+```
+
+## Contributing
+
 When contributing, please follow these steps:
 
 * Clone the repo and make your changes.
@@ -43,19 +88,24 @@ When contributing, please follow these steps:
 * Add your name to the list of contributers.
 * Submit a Pull Request.
 
-## Tests
+## Authors
 
-Tests are written following Django best practices. You can run them all easily using the example django_project.
+* Emanuele Bertoldi
 
-```
-$ cd django_dropbox_project
-$ python manage.py test --settings=settings
-```
+This project is based on previous work by:
 
-To check the unit tests coverage you can:
-```
-$ pip install coverage
-$ cd django_dropbox_project
-$ coverage run manage.py test --settings=settings
-$ coverage report -m
-```
+* Andres Torres [django-dropbox]
+* Maximiliano Cecilia [django-dropbox]
+* Josh Schneier [django-storages]
+* Danielle Madeley [django-storages]
+
+**Thanks to all of you!**
+
+## License
+
+Copyright (c) 2018 Emanuele Bertoldi
+
+[MIT License](http://en.wikipedia.org/wiki/MIT_License)
+
+[django-dropbox]: https://github.com/andres-torres-marroquin/django-dropbox
+[django-storages]: https://github.com/jschneier/django-storages

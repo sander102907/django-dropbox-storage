@@ -2,8 +2,9 @@
 .pydevproject
 .DS_Store
 *.pyc
-django_dropbox.egg-info/
+django_dropbox_storage.egg-info/
 dist/
+env/
 venv/
 bin/
 lib/
@@ -13,4 +14,3 @@ build/
 local_settings.py
 .coverage
 coverage.xml
-

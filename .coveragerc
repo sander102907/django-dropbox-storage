@@ -1,12 +1,18 @@
 [run]
 branch = True
-source = .,../django_dropbox
+source = .
 omit =
     */migrations/*
     */tests/*
     */settings/*
     */wsgi.py
+    env/*
+    venv/*
     manage.py
+    setup.py
+    local_settings.py
+    test_settings.py
+    test_urls.py
 
 [report]
 # Regexes for lines to exclude from consideration
