@@ -14,7 +14,7 @@ First things first:
 $ pip install django-dropbox-storage
 ```
 
-Then open the `settings.py` of your project and iclude it to your `INSTALLED_APPS`:
+Then open the `settings.py` of your project and include it to your `INSTALLED_APPS`:
 
 ```
 INSTALLED_APPS = (
