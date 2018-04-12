@@ -1,3 +1,4 @@
+from django.core.exceptions import ImproperlyConfigured
 from django.core.files.base import ContentFile
 from django.test import TestCase
 from django_dropbox_storage.storage import DropboxStorage
@@ -12,6 +13,15 @@ class DropboxStorageTest(TestCase):
 
     def tearDown(self):
         self.storage.delete(self.location)
+
+    def test_no_access_token(self, *args):
+        """
+        Storage raises an exception if access token is empty.
+        """
+        with self.assertRaises(ImproperlyConfigured):
+            DropboxStorage(token=None)
+        with self.assertRaises(ImproperlyConfigured):
+            DropboxStorage(token='')
 
     def test_file_access_options(self):
         """
@@ -31,6 +41,9 @@ class DropboxStorageTest(TestCase):
         self.assertFalse(self.storage.exists('django_storage_test'))
 
     def test_exists_folder(self):
+        """
+        Storage creates a folder.
+        """
         self.assertFalse(self.storage.exists('django_storage_test_exists'))
         self.storage.client.files_create_folder(self.location + '/django_storage_test_exists')
         self.assertTrue(self.storage.exists('django_storage_test_exists'))
@@ -39,7 +52,7 @@ class DropboxStorageTest(TestCase):
 
     def test_listdir(self):
         """
-        File storage returns a tuple containing directories and files.
+        Storage returns a tuple containing directories and files.
         """
         self.assertFalse(self.storage.exists('django_storage_test_1'))
         self.assertFalse(self.storage.exists('django_storage_test_2'))
@@ -60,7 +73,7 @@ class DropboxStorageTest(TestCase):
 
     def test_file_size(self):
         """
-        File storage returns a url to access a given file from the Web.
+        Storage returns a url to access a given file from the Web.
         """
         self.assertFalse(self.storage.exists('django_storage_test_size'))
         f = self.storage.open('django_storage_test_size', 'w')
@@ -74,3 +87,21 @@ class DropboxStorageTest(TestCase):
 
         self.storage.delete('django_storage_test_size')
         self.assertFalse(self.storage.exists('django_storage_test_size'))
+
+    def test_file_delete(self):
+        """
+        Storage returns true if deletion was performed, false otherwise.
+        """
+        self.assertFalse(self.storage.exists('django_storage_test_delete'))
+        f = self.storage.open('django_storage_test_delete', 'w')
+        f.write('storage delete')
+        f.close()
+        self.assertTrue(self.storage.exists('django_storage_test_delete'))
+
+        deleted = self.storage.delete('django_storage_test_delete')
+        self.assertEqual(deleted, True)
+
+        self.assertFalse(self.storage.exists('django_storage_test_delete'))
+
+        deleted = self.storage.delete('django_storage_test_delete')
+        self.assertEqual(deleted, False)

@@ -1,3 +1,5 @@
+# Original authors: Andres Torres and Maximiliano Cecilia
+
 import os.path
 import re
 import itertools
@@ -7,7 +9,8 @@ except ImportError:
     from StringIO import StringIO
 from dropbox import Dropbox
 from dropbox.exceptions import ApiError
-from dropbox.files import FolderMetadata, FileMetadata
+from dropbox.files import FolderMetadata, FileMetadata, DeleteError
+from django.core.exceptions import ImproperlyConfigured
 from django.core.cache import cache
 from django.core.files import File
 from django.core.files.storage import Storage
@@ -17,17 +20,18 @@ from django.utils.encoding import filepath_to_uri
 from .settings import ACCESS_TOKEN, CACHE_TIMEOUT, SHARE_LINK_CACHE_TIMEOUT
 
 
-assert ACCESS_TOKEN, "DROPBOX_ACCESS_TOKEN is not set!"
-
-
 @deconstructible
 class DropboxStorage(Storage):
     """
     A storage class providing access to resources in a Dropbox folder.
     """
 
-    def __init__(self, location='/Public'):
-        self.client = Dropbox(ACCESS_TOKEN)
+    def __init__(self, token=ACCESS_TOKEN, location='/Public'):
+        if not token:
+            raise ImproperlyConfigured("You must configure an access token at"
+                                       "'settings.DROPBOX_ACCESS_TOKEN'.")
+
+        self.client = Dropbox(token)
         self.account_info = self.client.users_get_current_account()
         self.location = location
         self.base_url = 'https://dl.dropboxusercontent.com/'
@@ -58,7 +62,7 @@ class DropboxStorage(Storage):
             self.client.files_delete(name)
         except ApiError as e:
             # not found
-            if e.error.is_path() and e.error.get_path().is_not_found():
+            if isinstance(e.error, DeleteError) and e.error.is_path_lookup() and e.error.get_path_lookup().is_not_found():
                 return False
             raise e
         return True
@@ -69,7 +73,7 @@ class DropboxStorage(Storage):
             self.client.files_get_metadata(name)
         except ApiError as e:
             # not found
-            if e.error.is_path() and e.error.get_path().is_not_found():
+            if hasattr(e.error, 'is_path') and e.error.is_path() and e.error.get_path().is_not_found():
                 return False
             raise e
         return True
