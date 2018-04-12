@@ -25,7 +25,7 @@ class DropboxStorage(Storage):
 
     def __init__(self, token=ACCESS_TOKEN, location='/Public'):
         if not token:
-            raise ImproperlyConfigured("You must configure an access token at"
+            raise ImproperlyConfigured("You must configure an access token at "
                                        "'settings.DROPBOX_ACCESS_TOKEN'.")
 
         self.client = Dropbox(token)

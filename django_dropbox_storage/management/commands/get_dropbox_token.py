@@ -1,14 +1,20 @@
 # Original authors: Andres Torres and Maximiliano Cecilia
 
-from django.core.management.base import NoArgsCommand, CommandError
+from django.core.exceptions import ImproperlyConfigured
+from django.core.management.base import BaseCommand, CommandError
 from dropbox import DropboxOAuth2FlowNoRedirect
 
 from django_dropbox_storage.settings import CONSUMER_KEY, CONSUMER_SECRET
 
 
-class Command(NoArgsCommand):
+class Command(BaseCommand):
 
-    def handle_noargs(self, *args, **options):
+    def handle(self, *args, **options):
+        if not (CONSUMER_KEY and CONSUMER_SECRET):
+            raise ImproperlyConfigured("To use this tool you have to set "
+                                       "'settings.DROPBOX_CONSUMER_KEY' and "
+                                       "'settings.DROPBOX_CONSUMER_SECRET'.")
+
         auth_flow = DropboxOAuth2FlowNoRedirect(CONSUMER_KEY, CONSUMER_SECRET)
 
         authorize_url = auth_flow.start()
