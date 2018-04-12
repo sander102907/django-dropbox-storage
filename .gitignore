@@ -11,6 +11,7 @@ lib/
 include/
 build/
 .Python
+.pypirc
 local_settings.py
 .coverage
 coverage.xml
