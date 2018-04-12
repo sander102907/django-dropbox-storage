@@ -50,7 +50,7 @@ If you don't have `DROPBOX_ACCESS_TOKEN` you can create one after creating a Dro
 If you have your Dropbox `App key` and `App secret`, you can set `DROPBOX_CONSUMER_KEY` and `DROPBOX_CONSUMER_SECRET` settings in `settings.py`, then run:
 
 ```
-$ python manage.py get_dropbox_token
+$ python manage.py get_dropbox_token [--settings=test_settings]
 ```
 
 And follow up on screen instructions, finally set the `DROPBOX_ACCESS_TOKEN_SECRET` in your `settings.py` module.
@@ -66,14 +66,14 @@ In order to run them, you need to set `DROPBOX_ACCESS_TOKEN` properly.
 To launch the test suite:
 
 ```
-$ python manage.py test --settings=test_settings
+$ python manage.py test [--settings=test_settings]
 ```
 
 To check the unit tests coverage you can:
 
 ```
 $ pip install coverage
-$ coverage run manage.py test --settings=test_settings
+$ coverage run manage.py test [--settings=test_settings]
 $ coverage report -m
 ```
 
