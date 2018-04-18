@@ -55,6 +55,14 @@ $ python manage.py get_dropbox_token [--settings=test_settings]
 
 And follow up on screen instructions, finally set the `DROPBOX_ACCESS_TOKEN_SECRET` in your `settings.py` module.
 
+You can also set default root folder setting the value of `DROPBOX_ROOT_FOLDER`:
+
+```
+DROPBOX_ROOT_FOLDER = '/Public'
+```
+
+By default it's set to `'/'` (root folder).
+
 ## Tests
 
 Tests are written following Django's best practices.

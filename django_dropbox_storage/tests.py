@@ -39,6 +39,22 @@ class DropboxStorageTest(TestCase):
         storage = DropboxStorage(location='/custom/root/folder')
         self.assertEqual(storage.location, '/custom/root/folder')
 
+    def test_create_on_custom_location(self, *args):
+        """
+        Storage uses given location as root folder even on file creation.
+        """
+        CUSTOM_ROOT_FOLDER = '/custom/root/folder'
+        
+        storage = DropboxStorage(location=CUSTOM_ROOT_FOLDER)
+        self.assertEqual(storage.location, CUSTOM_ROOT_FOLDER)
+        
+        f = storage.open('django_storage_test_exists', 'w')
+        f.write('storage contents')
+        f.close()
+        self.assertTrue(storage.exists('django_storage_test_exists'))
+        
+        self.assertTrue(self.storage.exists(CUSTOM_ROOT_FOLDER + '/django_storage_test_exists'))
+
     def test_file_access_options(self):
         """
         Standard file access options are available, and work as expected.

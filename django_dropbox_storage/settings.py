@@ -1,6 +1,6 @@
 from django.conf import settings
 
-DEFAULT_ROOT_FOLDER = '/Public'
+DEFAULT_ROOT_FOLDER = '/'
 
 CONSUMER_KEY = getattr(settings, 'DROPBOX_CONSUMER_KEY', None)
 
