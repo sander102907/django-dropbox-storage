@@ -126,7 +126,7 @@ class DropboxStorage(Storage):
         count = itertools.count(1)
         while self.exists(name):
             # file_ext includes the dot.
-            _fn = "%s_%s%s" % (file_root, count.next(), file_ext)
+            _fn = "%s_%s%s" % (file_root, next(count), file_ext)
             name = os.path.join(dir_name, _fn)
 
         return name
